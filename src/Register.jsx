@@ -2,9 +2,10 @@ import { useState } from 'react';
 import Webcam from "react-webcam";
 import instance from "./helpers/instance.js";
 import { useNavigate } from "react-router-dom";
+import cookie from 'js-cookie';
 
 function App() {
-    
+
   const [imageCaptured, setImageCaptured] = useState(false);
 
 
@@ -21,6 +22,7 @@ const navigate = useNavigate();
 const handleSubmit = (e) => {
   e.preventDefault();
   const formdata = new FormData(e.target);
+  cookie.set('email', formdata.get('email'));
   formdata.append('Image', imageCaptured);
 
   // Send form data to the server
