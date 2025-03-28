@@ -16,8 +16,8 @@ function App() {
   const webcamRef = useRef(null);
 
   const challenges = useMemo(() => [
-    "Up",
-    "Down",
+      "Up",
+    "Front",
     "Left",
     "Right"
   ].map(value => ({ value, sort: Math.random() }))
@@ -65,10 +65,10 @@ function App() {
       }
 
       //todo: uncomment this code
-      // if (res.data.liveness_status == "Spoof") {
-      //   alert("Spoof detected. Please try again.");
-      //   return;
-      // }
+      if (res.data.liveness_status == "Spoof") {
+        alert("Spoof detected. Please try again.");
+        return;
+      }
 
       if (res.data.task_validity == "Incorrect") {
         alert("Incorrect task. Please try again.");
@@ -85,6 +85,7 @@ function App() {
     } catch (error) {
       if (error.response) {
         alert(error.response.data.error);
+        return;
       }
       console.log(error);
     }
@@ -146,6 +147,7 @@ function App() {
                       audio={false}
                       screenshotFormat="image/jpeg"
                       className={`w-full h-full `}
+                      mirror={false}
                     />
                     {/*<div className="w-full h-full bg-white text-gray-600"> sfsdf</div>*/}
                   </div>
