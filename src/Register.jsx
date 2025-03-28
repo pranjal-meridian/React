@@ -98,8 +98,8 @@ const handleSubmit = (e) => {
             <button
               type="submit"
               className={`w-full py-3 px-4 rounded-lg text-white font-medium transition-all duration-300
-                ${imageCaptured 
-                  ? 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-300/50 cursor-pointer' 
+                ${imageCaptured
+                  ? 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-300/50 cursor-pointer'
                   : 'bg-gray-400 cursor-not-allowed'}`}
               disabled={!imageCaptured}
             >
@@ -108,7 +108,7 @@ const handleSubmit = (e) => {
           </form>
 
           <p className="mt-6 text-sm text-gray-600 text-center">
-            Already have an account? <a href="#" className="text-blue-600 hover:underline">Sign In</a>
+            Already have an account? <a href="/login" className="text-blue-600 hover:underline">Sign In</a>
           </p>
         </div>
 
