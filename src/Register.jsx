@@ -5,40 +5,72 @@ import { useNavigate } from "react-router-dom";
 import cookie from 'js-cookie';
 
 function App() {
-
-  const [imageCaptured, setImageCaptured] = useState(false);
-
+  const [frontImage, setFrontImage] = useState(null);
+  const [leftImage, setLeftImage] = useState(null);
+  const [rightImage, setRightImage] = useState(null);
+  const [imageStep, setImageStep] = useState(0);  // 0 - Front, 1 - Left, 2 - Right
+  const [capturing, setCapturing] = useState(false);  // To track whether we're in the middle of taking a photo
+  const navigate = useNavigate();
 
   const handleCaptureStart = (screenshot) => {
-    setImageCaptured(screenshot);
+    // Depending on the current step, set the appropriate image state
+    if (imageStep === 0) {
+      setFrontImage(screenshot);
+    } else if (imageStep === 1) {
+      setLeftImage(screenshot);
+    } else if (imageStep === 2) {
+      setRightImage(screenshot);
+    }
+
+    // Proceed to the next step after capturing the image
+    if (imageStep < 2) {
+      setImageStep(imageStep + 1);
+    }
   };
 
   const handleRetake = () => {
-    setImageCaptured(false);
+    // Allow user to retake the current image
+    if (imageStep === 0) {
+      setFrontImage(null);
+    } else if (imageStep === 1) {
+      setLeftImage(null);
+    } else if (imageStep === 2) {
+      setRightImage(null);
+    }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formdata = new FormData(e.target);
+    cookie.set('email', formdata.get('email'));
 
-const navigate = useNavigate();
-const handleSubmit = (e) => {
-  e.preventDefault();
-  const formdata = new FormData(e.target);
-  cookie.set('email', formdata.get('email'));
-  formdata.append('Image', imageCaptured);
+    // Append all images to the form data
+    formdata.append('frontImage', frontImage);
+    formdata.append('leftImage', leftImage);
+    formdata.append('rightImage', rightImage);
 
-  // Send form data to the server
-  instance.post('api/register', formdata)
-    .then((response) => {
-      // Success alert and refresh
-      alert('User registered successfully!');
-      navigate("/challenge");
-    })
-    .catch((error) => {
-      // Handle any error during submission
-      console.error('There was an error!', error);
-      alert('Failed to register the user. Please try again!');
-    });
-};
+    for (let pair of formdata.entries()) {
+      console.log(pair[0]+ ': ' + pair[1]);
+    }
 
+    // Send form data to the server
+    instance.post('api/register', formdata)
+      .then((response) => {
+        // Success alert and redirect
+        alert('User registered successfully!');
+        navigate("/challenge");
+      })
+      .catch((error) => {
+        console.error('There was an error!', error);
+        alert('Failed to register the user. Please try again!');
+      });
+  };
+
+  const instructions = [
+    "Please look at the camera directly for the front photo.",
+    "Please look to the left for the left photo.",
+    "Please look to the right for the right photo."
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 flex items-center justify-center p-4">
@@ -52,8 +84,6 @@ const handleSubmit = (e) => {
               <input
                 type="text"
                 name="name"
-                // value={formData.name}
-                // onChange={handleChange}
                 placeholder="Enter your name"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               />
@@ -64,8 +94,6 @@ const handleSubmit = (e) => {
               <input
                 type="email"
                 name="email"
-                // value={formData.email}
-                // onChange={handleChange}
                 placeholder="name@example.com"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               />
@@ -76,8 +104,6 @@ const handleSubmit = (e) => {
               <input
                 type="password"
                 name="password"
-                // value={formData.password}
-                // onChange={handleChange}
                 placeholder="Create a strong password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               />
@@ -88,8 +114,6 @@ const handleSubmit = (e) => {
               <input
                 type="password"
                 name="confirmPassword"
-                // value={formData.confirmPassword}
-                // onChange={handleChange}
                 placeholder="Re-enter your password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
               />
@@ -98,75 +122,81 @@ const handleSubmit = (e) => {
             <button
               type="submit"
               className={`w-full py-3 px-4 rounded-lg text-white font-medium transition-all duration-300
-                ${imageCaptured
+                ${(frontImage && leftImage && rightImage)
                   ? 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-300/50 cursor-pointer'
                   : 'bg-gray-400 cursor-not-allowed'}`}
-              disabled={!imageCaptured}
+              disabled={!(frontImage && leftImage && rightImage)}
             >
               Create Account
             </button>
           </form>
-
           <p className="mt-6 text-sm text-gray-600 text-center">
             Already have an account? <a href="/login" className="text-blue-600 hover:underline">Sign In</a>
           </p>
         </div>
 
         {/* Right side: Image capture */}
-        <div className="bg-gradient-to-br from-blue-600 to-purple-700 md:w-2/5 p-8 flex flex-col items-center justify-center text-white">
-          <h3 className="text-xl font-bold mb-6">Profile Photo</h3>
+        <div className="bg-gradient-to-br from-blue-600 to-purple-700 md:w-2/5 p-3 flex flex-col items-center justify-center text-white">
+          <h3 className="text-xl font-bold mb-6">Register Face</h3>
+          <p className="text-center mb-4">{instructions[imageStep]}</p>
 
-          {!imageCaptured ? (
-            <div className="text-center">
-                {/*<Camera size={48} className="mb-2" />*/}
-                <Webcam
-                  audio={false}
-                  screenshotFormat="image/jpeg"
-                  videoConstraints={{
-                    width: 160,
-                    height: 160,
-                    facingMode: 'user',
-                  }}
-                  // st
-                  className="rounded-full object-cover mb-5"
-                >
-                  {({ getScreenshot }) => (
+          {/* Webcam display */}
+          <Webcam
+            audio={false}
+            screenshotFormat="image/jpeg"
+            videoConstraints={{
+              width: 245,
+              height: 245,
+              facingMode: 'user',
+            }}
+            className="rounded-full object-cover mb-5"
+          >
+            {({ getScreenshot }) => (
               <button
-                onClick={() => handleCaptureStart(getScreenshot())}
+                onClick={() => {
+                  setCapturing(true);  // Set capturing flag to true
+                  const screenshot = getScreenshot();
+                  handleCaptureStart(screenshot);  // Capture and store the screenshot
+                  setCapturing(false);  // Reset the capturing flag after the screenshot is taken
+                }}
                 className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-all duration-300 font-medium"
+                disabled={capturing}  // Disable the button while capturing
               >
-                <p>Take a Photo</p>
+                {capturing ? "Capturing..." : imageStep < 2 ? "Take Photo" : "Next"}
               </button>
-    )}
-                </Webcam>
-              {/*<p className="mt-4 text-sm opacity-75">Click to start camera</p>*/}
-            </div>
-          ) : (
-            <div className="text-center">
-              <div className="w-40 h-40 bg-white/20 rounded-full flex items-center justify-center border-2 border-white/50 shadow-xl overflow-hidden">
-                <img src={imageCaptured}
-                     alt="Profile preview" className="object-cover w-full h-full" />
+            )}
+          </Webcam>
+
+          {/* Preview the captured images */}
+          {frontImage && leftImage && rightImage && (
+            <div className="flex space-x-4 mt-4">
+              <div className="w-20 h-20 rounded-full border-2 border-white/50 overflow-hidden">
+                <img src={frontImage} alt="Front" className="object-cover w-full h-full" />
               </div>
-              <p className="mt-4 text-sm opacity-75">Looking good!</p>
+              <div className="w-20 h-20 rounded-full border-2 border-white/50 overflow-hidden">
+                <img src={leftImage} alt="Left" className="object-cover w-full h-full" />
+              </div>
+              <div className="w-20 h-20 rounded-full border-2 border-white/50 overflow-hidden">
+                <img src={rightImage} alt="Right" className="object-cover w-full h-full" />
+              </div>
             </div>
           )}
 
-          <div className="mt-6 flex space-x-4">
-            {/*{isCapturing && (*/}
-            {/*  <button onClick={handleCaptureClick} className="px-4 py-2 bg-white text-blue-600 rounded-lg hover:bg-blue-50 transition-all duration-300 font-medium">*/}
-            {/*    Capture*/}
-            {/*  </button>*/}
-            {/*)}*/}
+          {/* Buttons */}
+          {imageStep < 2 && (
+            <button onClick={handleRetake} className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all duration-300 backdrop-blur-sm mt-4">
+              Retake Photo
+            </button>
+          )}
 
-            {imageCaptured && (
-              <button onClick={handleRetake} className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all duration-300 backdrop-blur-sm">
-                Retake Photo
-              </button>
-            )}
-          </div>
+          {/* Next Step or Submit */}
+          {imageStep === 2 && (
+            <button onClick={handleSubmit} className="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-all duration-300 backdrop-blur-sm mt-4">
+              Submit Photos
+            </button>
+          )}
         </div>
       </div>
-      {/*<div className={'hidden'}><Webcam /></div>*/}
     </div>
   );
 }
