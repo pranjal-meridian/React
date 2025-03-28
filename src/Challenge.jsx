@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from "react";
+import {useState, useEffect, useRef, useMemo} from "react";
 import './App.css';
 import Webcam from "react-webcam";
 import instance from "./helpers/instance.js";
@@ -15,12 +15,14 @@ function App() {
   const [isComplete, setIsComplete] = useState(false);
   const webcamRef = useRef(null);
 
-  const challenges = [
-    "Please look up",
-    "Please look down",
-    "Please turn left",
-    "Please turn right"
-  ];
+  const challenges = useMemo(() => [
+    "Up",
+    "Down",
+    "Left",
+    "Right"
+  ].map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value), []);
 
   useEffect(() => {
     let timer;
@@ -53,15 +55,44 @@ function App() {
     }
     formData.append("email", cookie.get("email"));
     formData.append("image", img);
+    formData.append("task", challenges[challengeIndex]);
 
-    const res = await instance.post("/api/verify", formData);
-    console.log(res.data);
+    try {
+      const res = await instance.post("/api/verify", formData);
+      if (res.data.face_match != "Matched") {
+        alert("Face not matched. Please try again.");
+        return
+      }
 
-    return;
+      //todo: uncomment this code
+      // if (res.data.liveness_status == "Spoof") {
+      //   alert("Spoof detected. Please try again.");
+      //   return;
+      // }
+
+      if (res.data.task_validity == "Incorrect") {
+        alert("Incorrect task. Please try again.");
+        return;
+      }
+
+      if (res.data.error) {
+        alert(res.data.error);
+        return;
+      }
+
+
+
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data.error);
+      }
+      console.log(error);
+    }
 
     if (challengeIndex < challenges.length - 1) {
       setChallengeIndex(challengeIndex + 1);
     } else {
+      setChallengeIndex(challengeIndex + 1);
       setIsComplete(true);
       console.log("Verification complete");
     }
@@ -197,7 +228,7 @@ function App() {
                     : index < challengeIndex
                       ? "text-green-700"
                       : "text-gray-600"
-                }`}>{challenge}</span>
+                }`}>Please Look {challenge}</span>
               </div>
               {index < challengeIndex && (
                 <span className="text-green-500 text-lg">✓</span>
