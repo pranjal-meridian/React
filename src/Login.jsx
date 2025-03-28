@@ -11,7 +11,7 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:5000/login', { email, password })
+    axios.post('/api/login', { email, password })
       .then((response) => {
         if (response.data.status === "success") {
             cookie.set('email', email);
