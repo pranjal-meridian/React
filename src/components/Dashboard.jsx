@@ -1,0 +1,31 @@
+import React from 'react';
+import ActiveUsersSection from './sections/ActiveUsersSection';
+import UserIssuesSection from './sections/UserIssuesSection';
+import MetricsSection from './sections/MetricsSection';
+import AuthenticationSection from './sections/AuthenticationSection';
+import SuspiciousActivitySection from './sections/SuspiciousActivitySection';
+import SessionDurationSection from './sections/SessionDurationSection';
+
+function Dashboard() {
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold text-slate-700 mb-8">Dashboard</h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* First Row */}
+        <ActiveUsersSection />
+        <UserIssuesSection />
+        <MetricsSection />
+      </div>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        {/* Second Row */}
+        <AuthenticationSection />
+        <SuspiciousActivitySection />
+        <SessionDurationSection />
+      </div>
+    </div>
+  );
+}
+
+export default Dashboard;
