@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import cookie from 'js-cookie';
@@ -7,16 +7,39 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [location, setLocation] = useState({latitude:"", longitude:""});
+
+
+  useEffect(() => {
+      if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          cookie.set("latitude", latitude);
+          cookie.set("longitude", longitude);
+          setLocation({ latitude, longitude });
+        },
+        (error) => console.error("Error getting location:", error),
+        { enableHighAccuracy: true }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('/api/login', { email, password })
+    axios.post('/api/login', { email, password, latitude: location.latitude, longitude: location.longitude})
       .then((response) => {
         if (response.data.status === "success") {
             cookie.set('email', email);
-            navigate("/challenge");
-        } else {
+            if (response.data.is_admin) {
+              navigate("/logs");
+            }else{
+              navigate("/challenge");
+            }
+        }else {
             alert(response.data.message);
         }
       })
