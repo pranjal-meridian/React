@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Webcam from "react-webcam";
 import instance from "./helpers/instance.js";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,26 @@ function App() {
   const [imageStep, setImageStep] = useState(0);  // 0 - Front, 1 - Left, 2 - Right
   const [capturing, setCapturing] = useState(false);  // To track whether we're in the middle of taking a photo
   const navigate = useNavigate();
+  const [location, setLocation] = useState({latitude:"", longitude:""});
+
+
+    useEffect(() => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    cookie.set("latitude", latitude);
+                    cookie.set("longitude", longitude);
+                    setLocation({ latitude, longitude });
+                },
+                (error) => console.error("Error getting location:", error),
+                { enableHighAccuracy: true }
+            );
+        } else {
+            console.error("Geolocation is not supported by this browser.");
+        }
+    }, []);
+
 
   const handleCaptureStart = (screenshot) => {
     // Depending on the current step, set the appropriate image state
@@ -48,10 +68,9 @@ function App() {
     formdata.append('frontImage', frontImage);
     formdata.append('leftImage', leftImage);
     formdata.append('rightImage', rightImage);
+    formdata.append('latitude', location.latitude);
+    formdata.append('longitude', location.longitude);
 
-    for (let pair of formdata.entries()) {
-      console.log(pair[0]+ ': ' + pair[1]);
-    }
 
     // Send form data to the server
     instance.post('api/register', formdata)
@@ -143,6 +162,7 @@ function App() {
           {/* Webcam display */}
           <Webcam
             audio={false}
+            mirrored={true}
             screenshotFormat="image/jpeg"
             videoConstraints={{
               width: 245,
