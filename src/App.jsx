@@ -4,6 +4,7 @@ import Register from "./Register.jsx";
 import Challenge from "./Challenge.jsx";
 import Login from "./Login.jsx";
 import Logs from "./Logs";
+import Dashboard from './components/Dashboard';
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Register />} />
         <Route path="/challenge" element={<Challenge />} />
+        <Route path='/dashboard' element={<Dashboard/>} />
         <Route path='/login' element={<Login />} />
         <Route path="/logs" element={<Logs />} />
       </Routes>
