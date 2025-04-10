@@ -29,7 +29,7 @@ function SessionDurationSection() {
     <div className="bg-white p-6 rounded-lg shadow">
       <h2 className="text-lg font-medium text-gray-800 mb-2">Average Session Duration</h2>
       <div className="mb-4">
-        <span className="text-3xl font-bold">{sessionData.overall_avg_session_duration}m</span>
+        <span className="text-3xl font-bold">{sessionData.overall_avg_session_duration}sec</span>
         <div className="flex items-center mt-2">
           <span className={`text-sm ${sessionData.trend === "up" ? "text-green-500" : "text-red-500"}`}>
             {sessionData.trend === "up" ? "↑" : "↓"} {sessionData.percentage_change}%
