@@ -10,7 +10,7 @@ function SessionDurationSection() {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:5000/average-session-duration')
+    axios.get('api/average-session-duration')
       .then(response => {
         if (response.data.success) {
           setSessionData({

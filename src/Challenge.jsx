@@ -42,6 +42,8 @@ function App() {
       }, 1000);
     } 
     else if (timeLeft === 0) {
+      alert("Time's up! Please try again.");
+      markVerificationFail();
       logoutAndRedirect();
     }
 
@@ -51,6 +53,15 @@ function App() {
   const requestCameraPermission = () => {
     setHasPermission(true);
     setIsCameraActive(true);
+  };
+
+  const markVerificationFail = async () => {
+    try {
+      await axios.post("/api/log-verification", { email: cookie.get("email"), latitude: cookie.get("latitude"), longitude: cookie.get("longitude"), status: "Rejected", details: "Task Failure" });
+      console.log("Verification marked as Failed in logs");
+    } catch (error) {
+      console.error("Error updating logs:", error);
+    }
   };
 
   const markVerificationComplete = async (secondsTaken) => {
@@ -77,6 +88,7 @@ function App() {
     alert(message);
     if (newTriesLeft[challengeIndex] === 0) {
       alert("No more tries left for this challenge. Redirecting to login.");
+      markVerificationFail();
       logoutAndRedirect();
     }
   };

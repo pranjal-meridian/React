@@ -104,7 +104,7 @@ function MetricsSection() {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-gray-600 mb-1">Average Time Taken</h3>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">{sessionStats.overall_avg_session_duration}</span>
+              <span className="text-2xl font-bold">{sessionStats.overall_avg_session_duration}s</span>
               <div className={`flex items-center ${getColor(sessionStats.trend)}`}>
               <span>{sessionStats.percentage_change}%</span>
               {getArrow(sessionStats.trend)}
@@ -117,7 +117,7 @@ function MetricsSection() {
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-gray-600 mb-1">User Session Duration</h3>
             <div className="flex items-center justify-between">
-              <span className="text-2xl font-bold">{sessionStats.overall_avg_session_duration}</span>
+              <span className="text-2xl font-bold">{sessionStats.overall_avg_session_duration}s</span>
               <div className={`flex items-center ${getColor(sessionStats.trend)}`}>
                 <span>{sessionStats.percentage_change}%</span>
                 {getArrow(sessionStats.trend)}
