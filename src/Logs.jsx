@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LogsPage = () => {
 
@@ -26,9 +27,16 @@ const LogsPage = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-semibold text-slate-700 mb-6">Logs</h1>
+
+      <div className='flex justify-between items-center mb-6'>
+        <h1 className="text-3xl font-bold text-slate-700 mb-6">Logs</h1>
+        <button className="text-xl font-bold text-white bg-blue-600 px-5 py-3 rounded mb-6 shadow-lg hover:bg-blue-700 transition" onClick={() => navigate('/dashboard')}>Dashboard</button>
+      </div>
+
 
       <div className="overflow-x-auto rounded-lg shadow">
         <table className="w-full border-collapse">

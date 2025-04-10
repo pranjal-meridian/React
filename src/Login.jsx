@@ -35,7 +35,7 @@ function Login() {
         if (response.data.status === "success") {
             cookie.set('email', email);
             if (response.data.is_admin) {
-              navigate("/logs");
+              navigate("/dashboard");
             }else{
               navigate("/challenge");
             }
