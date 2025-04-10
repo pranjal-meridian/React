@@ -13,7 +13,8 @@ function App() {
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [challengeIndex, setChallengeIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(50);
-  const [triesLeft, setTriesLeft] = useState(3);
+  //const [triesLeft, setTriesLeft] = useState(3);
+  const [challengeTriesLeft, setChallengeTriesLeft] = useState([3, 3, 3, 3]);
   const [isComplete, setIsComplete] = useState(false);
   const webcamRef = useRef(null);
   const [startTime, setStartTime] = useState(null);
@@ -39,13 +40,13 @@ function App() {
       timer = setInterval(() => {
         setTimeLeft(prev => prev - 1);
       }, 1000);
-    } else if (timeLeft === 0 && triesLeft > 0) {
-      setTriesLeft(prev => prev - 1);
-      setTimeLeft(50);
+    } 
+    else if (timeLeft === 0) {
+      logoutAndRedirect();
     }
 
     return () => clearInterval(timer);
-  }, [isCameraActive, timeLeft, triesLeft, isComplete]);
+  }, [isCameraActive, timeLeft, challengeTriesLeft[challengeIndex], isComplete]);
 
   const requestCameraPermission = () => {
     setHasPermission(true);
@@ -61,6 +62,25 @@ function App() {
       console.error("Error updating logs:", error);
     }
   };
+
+  const logoutAndRedirect = () => {
+    cookie.remove("email");
+    cookie.remove("latitude");
+    cookie.remove("longitude");
+    navigate("/");  
+  };
+
+  const handleFailure = (message) => {
+    let newTriesLeft = [...challengeTriesLeft];
+    newTriesLeft[challengeIndex] -= 1;
+    setChallengeTriesLeft(newTriesLeft);
+    alert(message);
+    if (newTriesLeft[challengeIndex] === 0) {
+      alert("No more tries left for this challenge. Redirecting to login.");
+      logoutAndRedirect();
+    }
+  };
+  
 
   const handleChallengeComplete = async () => {
     const img = webcamRef.current.getScreenshot();
@@ -78,19 +98,23 @@ function App() {
 
     try {
       const res = await instance.post("/api/verify", formData);
-      if (res.data.face_match != "Matched") {
-        alert("Face not matched. Please try again.");
-        return
-      }
 
-      //todo: uncomment this code
-      if (res.data.liveness_status == "Spoof") {
-        alert("Spoof detected. Please try again.");
+      let newTriesLeft = [...challengeTriesLeft];
+
+      if (res.data.face_match !== "Matched") {
+        handleFailure("Face not matched. Please try again.");
         return;
-      }
 
-      if (res.data.task_validity == "Incorrect") {
-        alert("Incorrect task. Please try again.");
+      }
+  
+      else if (res.data.liveness_status === "Spoof") {
+        handleFailure("Spoof detected. Please try again.");
+        return;
+
+      }
+  
+      else if (res.data.task_validity === "Incorrect") {
+        handleFailure("Incorrect task. Please try again.");
         return;
       }
 
@@ -98,8 +122,6 @@ function App() {
         alert(res.data.error);
         return;
       }
-
-
 
     } catch (error) {
       if (error.response) {
@@ -141,7 +163,7 @@ function App() {
               <span className="text-blue-700 font-medium">{formatTime(timeLeft)}</span>
             </div>
             <div className="flex items-center bg-amber-50 px-3 py-1 rounded-full">
-              <span className="text-amber-700 font-medium">{triesLeft} Tries Left</span>
+              <span className="text-amber-700 font-medium">{challengeTriesLeft[challengeIndex]} Tries Left</span>
             </div>
           </div>
         </div>
