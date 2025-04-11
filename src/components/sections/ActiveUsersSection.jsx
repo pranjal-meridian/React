@@ -4,7 +4,7 @@ import BarChart from "../charts/BarChart";
 function ActiveUsersSection() {
   const [activeUsers, setActiveUsers] = useState(0);
   const [percentageChange, setPercentageChange] = useState(0);
-  const [changeArrow, setChangeArrow] = useState("↑");
+  const [changeArrow, setChangeArrow] = useState("up");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +33,7 @@ function ActiveUsersSection() {
         <span className="text-3xl font-bold">{activeUsers}</span>
         <div className="flex items-center mt-2">
           <span className={`text-sm ${percentageChange >= 0 ? "text-green-500" : "text-red-500"}`}>
-            {changeArrow} {Math.abs(percentageChange)}%
+            {changeArrow==="up"?"↑":"↓"} {Math.abs(percentageChange)}%
           </span>
           <span className="text-gray-500 text-sm ml-2">vs last week</span>
         </div>

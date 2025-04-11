@@ -4,7 +4,7 @@ import Register from "./Register.jsx";
 import Challenge from "./Challenge.jsx";
 import Login from "./Login.jsx";
 import Logs from "./Logs";
-import Dashboard from "./components/Dashboard.jsx";
+import Dashboard from './components/Dashboard.jsx';
 
 
 const App = () => {
