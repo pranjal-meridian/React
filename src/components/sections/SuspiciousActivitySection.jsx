@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import BlockedUser from '../BlockedUser';
+import instance from "../../helpers/instance.js";
 
 function SuspiciousActivitySection() {
   const suspiciousUsers = [
@@ -9,17 +10,32 @@ function SuspiciousActivitySection() {
     { username: 'User3', time: '4:30 PM' }
   ];
 
+  const [sus, setSus] = useState()
+
+  const fetchSuspiciousUsers = async () => {
+    try {
+      const response = await instance.get('/api/get-top-rejected-users');
+      setSus(response.data);
+  }
+    catch (error) {
+      console.error("Error fetching suspicious users:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSuspiciousUsers();
+  }, []);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow">
       <h2 className="text-lg font-medium text-gray-800 mb-2">Suspicious Activity</h2>
-      <p className="text-gray-500 text-sm mb-4">Adipiscing elit, sed do eiusmod tempor</p>
-      
+
       <div className="divide-y divide-gray-200">
-        {suspiciousUsers.map((user, index) => (
-          <BlockedUser 
-            key={index} 
-            username={user.username} 
-            time={user.time} 
+        {sus?.map((user, index) => (
+          <BlockedUser
+            key={index}
+            username={user.email}
+            time={`${user.count} times`}
           />
         ))}
       </div>

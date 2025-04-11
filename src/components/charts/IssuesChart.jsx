@@ -19,7 +19,7 @@ ChartJS.register(
     Legend
 );
 
-function IssuesChart() {
+function IssuesChart(props) {
     const options = {
         responsive: true,
         maintainAspectRatio: false,
@@ -29,9 +29,9 @@ function IssuesChart() {
             },
             datalabels: {
                 display: true,
-                color: '#828282', 
-                align: 'top', 
-                anchor: 'end',  
+                color: '#828282',
+                align: 'top',
+                anchor: 'end',
                 font: {
                     size: 14,
                     weight: 'bold',
@@ -45,29 +45,31 @@ function IssuesChart() {
             x: {
                 display: true,
                 grid: {
-                    display: false,  
+                    display: false,
                 },
             },
             y: {
                 display: false,
                 grid: {
-                    display: false,  
+                    display: false,
                 },
                 max: 12,
             },
         },
     };
-           
+
+    const values = props.data && [
+      props.data.filter(item => item.detail === 'Login Issue').length,
+      props.data.filter(item => item.detail === 'Task Failed').length,
+      0,
+      props.data.filter(item => item.detail === 'Invalid Attempt').length
+    ]
+
     const data = {
-        labels: [
-            "1",
-            "5",
-            "3",
-            "10",
-        ],
+        labels: ['Login Issue', 'Incorrect Challenge Performed', 'System Error', 'Invalid Attempts'],
         datasets: [
             {
-                data: [1, 5, 3, 10],
+                data: values,
                 backgroundColor: ['#EDF2FA', '#D0E0FB', '#AAC9FF', '#7DAEFF'],
                 barThickness: 35,
                 borderRadius: 4,
