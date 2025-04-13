@@ -36,7 +36,7 @@ function IssuesChart(props) {
                     size: 14,
                     weight: 'bold',
                 },
-                formatter: function(value) {
+                formatter: function (value) {
                     return value;
                 }
             },
@@ -49,37 +49,37 @@ function IssuesChart(props) {
                 },
             },
             y: {
-                display: false,
+                display: true,
                 grid: {
                     display: false,
                 },
-                max: 12,
+                beginAtZero: true,
             },
         },
     };
 
-    const values = props.data && [
-      props.data.filter(item => item.detail === 'Login Issue').length,
-      props.data.filter(item => item.detail === 'Task Failed').length,
-      0,
-      props.data.filter(item => item.detail === 'Invalid Attempt').length
-    ]
+    const failedLabels = ['failed_Up', 'failed_Left', 'failed_Right', 'failed_Front'];
+
+    const values = props.data ? failedLabels.map(key => props.data[key] || 0) : [];
+
+    const totalFailed = values.reduce((acc, val) => acc + val, 0);
 
     const data = {
-        labels: ['Login Issue', 'Incorrect Challenge Performed', 'System Error', 'Invalid Attempts'],
+        labels: ['Failed Up', 'Failed Left', 'Failed Right', 'Failed Front'],
         datasets: [
             {
                 data: values,
-                backgroundColor: ['#EDF2FA', '#D0E0FB', '#AAC9FF', '#7DAEFF'],
-                barThickness: 35,
+                backgroundColor: ['#FFCDD2', '#D1C4E9', '#C5CAE9', '#BBDEFB'],
+                barThickness: 30,
                 borderRadius: 4,
             }
         ],
     };
 
     return (
-        <div className="w-full h-40">
+        <div className="w-full h-64">
             <Bar options={options} data={data} />
+            <p className="text-gray-600 text-sm mt-1">Total number of errors: <span className="font-semibold">{totalFailed}</span></p>
         </div>
     );
 }
