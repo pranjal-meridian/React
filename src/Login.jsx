@@ -34,6 +34,7 @@ function Login() {
       .then((response) => {
         if (response.data.status === "success") {
             cookie.set('email', email);
+            cookie.set('is_admin', response.data.is_admin);
             if (response.data.is_admin) {
               navigate("/logs");
             }else{
