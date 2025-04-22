@@ -5,6 +5,7 @@ import Challenge from "./Challenge.jsx";
 import Login from "./Login.jsx";
 import Logs from "./Logs";
 import Dashboard from './components/Dashboard.jsx';
+import AdminRoute from './components/AdminRoute';
 
 
 const App = () => {
@@ -14,8 +15,17 @@ const App = () => {
         <Route path="/" element={<Register />} />
         <Route path="/challenge" element={<Challenge />} />
         <Route path='/login' element={<Login />} />
-        <Route path="/logs" element={<Logs />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/logs" element={
+          <AdminRoute>
+            <Logs />
+          </AdminRoute>
+        } />
+
+        <Route path="/dashboard" element={
+          <AdminRoute>
+            <Dashboard />
+          </AdminRoute>
+        } />
       </Routes>
     </Router>
   )
