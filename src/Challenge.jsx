@@ -24,7 +24,7 @@ function App() {
 
   const challenges = useMemo(() => [
     "Front",
-    "Up",
+    // "Up",
     "Left",
     "Right"
   ].map(value => ({ value, sort: Math.random() }))
