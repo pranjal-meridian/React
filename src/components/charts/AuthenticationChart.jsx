@@ -10,7 +10,7 @@ function AuthenticationChart() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost:5000/auth-rates'); 
+                const response = await fetch('api/auth-rates'); 
                 const data = await response.json();
                 setAuthData(data);
             } catch (error) {

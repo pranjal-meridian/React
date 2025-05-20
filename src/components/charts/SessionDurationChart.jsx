@@ -39,7 +39,7 @@ function SessionDurationChart() {
 
     // Function to fetch data
     const fetchData = () => {
-        axios.get('http://localhost:5000/average-session-duration')
+        axios.get('api/average-session-duration')
             .then(response => {
                 if (response.data.success) {
                     const last7DaysData = response.data.last_7_days; // Extract data for last 7 days

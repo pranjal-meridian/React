@@ -9,7 +9,7 @@ function ActiveUsersSection() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/active-users");
+        const response = await fetch("api/active-users");
         const data = await response.json();
         
         setActiveUsers(data.total_active_users);
