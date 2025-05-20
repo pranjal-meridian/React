@@ -11,7 +11,7 @@ export default defineConfig({
       '/api': {
         target: server,
         changeOrigin: true,
-        secure: false, // 👈 ignore SSL errors (only for development)
+        // secure: false, // 👈 ignore SSL errors (only for development)
         rewrite: (path) => path.replace(/^\/api/, ''),
       }
     }
