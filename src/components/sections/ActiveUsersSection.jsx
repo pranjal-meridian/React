@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import BarChart from "../charts/BarChart";
+import instance from "../../helpers/instance.js";
 
 function ActiveUsersSection() {
   const [activeUsers, setActiveUsers] = useState(0);
@@ -9,8 +10,8 @@ function ActiveUsersSection() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("api/active-users");
-        const data = await response.json();
+        const response = await instance.get("/active-users");
+        const data = response.data;
         
         setActiveUsers(data.total_active_users);
         setPercentageChange(data.percentage_change);

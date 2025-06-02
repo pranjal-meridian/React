@@ -14,7 +14,7 @@ function SuspiciousActivitySection() {
 
   const fetchSuspiciousUsers = async () => {
     try {
-      const response = await instance.get('/api/get-top-rejected-users');
+      const response = await instance.get('/get-top-rejected-users');
       setSus(response.data);
   }
     catch (error) {

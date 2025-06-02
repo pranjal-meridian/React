@@ -10,7 +10,8 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import axios from 'axios';
+import instance from "../../helpers/instance.js";
+// import axios from 'axios';
 
 ChartJS.register(
     CategoryScale,
@@ -39,7 +40,7 @@ function SessionDurationChart() {
 
     // Function to fetch data
     const fetchData = () => {
-        axios.get('api/average-session-duration')
+        instance.get('/average-session-duration')
             .then(response => {
                 if (response.data.success) {
                     const last7DaysData = response.data.last_7_days; // Extract data for last 7 days

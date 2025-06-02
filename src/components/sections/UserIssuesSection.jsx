@@ -5,7 +5,7 @@ import instance from "../../helpers/instance.js";
 function UserIssuesSection() {
   const [data, setData] = useState(null);
   const fetchData = async () => {
-    const response = await instance.get('/api/get-failed-tasks');
+    const response = await instance.get('/get-failed-tasks');
     setData(response.data);
   }
 

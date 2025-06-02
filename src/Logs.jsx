@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import instance from "./helpers/instance.js";
+// import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const LogsPage = () => {
@@ -7,7 +8,7 @@ const LogsPage = () => {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    axios.get("/api/get-logs")
+    instance.get("/get-logs")
       .then(response => setLogs(response.data))
       .catch(error => console.error("Error fetching logs:", error));
   }, []);

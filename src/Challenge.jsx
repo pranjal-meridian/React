@@ -4,7 +4,7 @@ import Webcam from "react-webcam";
 import instance from "./helpers/instance.js";
 import cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+// import axios from "axios";
 
 
 function App() {
@@ -57,7 +57,7 @@ function App() {
 
   const markVerificationFail = async () => {
     try {
-      await axios.post("/api/log-verification", { email: cookie.get("email"), latitude: cookie.get("latitude"), longitude: cookie.get("longitude"), status: "Rejected", details: "Task Failure" });
+      await instance.post("/log-verification", { email: cookie.get("email"), latitude: cookie.get("latitude"), longitude: cookie.get("longitude"), status: "Rejected", details: "Task Failure" });
       console.log("Verification marked as Failed in logs");
     } catch (error) {
       console.error("Error updating logs:", error);
@@ -67,7 +67,7 @@ function App() {
   const markVerificationComplete = async (secondsTaken) => {
     console.log("timeTaken: ", secondsTaken);
     try {
-      await axios.post("/api/log-verification", { email: cookie.get("email"), latitude: cookie.get("latitude"), longitude: cookie.get("longitude"), time_taken: secondsTaken });
+      await instance.post("/log-verification", { email: cookie.get("email"), latitude: cookie.get("latitude"), longitude: cookie.get("longitude"), time_taken: secondsTaken });
       console.log("Verification marked as complete in logs");
     } catch (error) {
       console.error("Error updating logs:", error);
@@ -109,7 +109,11 @@ function App() {
     formData.append("task", challenges[challengeIndex]);
 
     try {
-      const res = await instance.post("/api/verify", formData);
+      const res = await instance.post("/verify", formData,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
 
       let newTriesLeft = [...challengeTriesLeft];
 

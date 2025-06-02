@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import instance from "../../helpers/instance.js";
+// import axios from 'axios';
 import SessionDurationChart from '../charts/SessionDurationChart';
 
 function SessionDurationSection() {
@@ -10,7 +11,7 @@ function SessionDurationSection() {
   });
 
   useEffect(() => {
-    axios.get('api/average-session-duration')
+    instance.get('/average-session-duration')
       .then(response => {
         if (response.data.success) {
           setSessionData({

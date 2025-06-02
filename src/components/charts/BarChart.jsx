@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
+import instance from "../../helpers/instance.js";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,8 +29,8 @@ function BarChart() {
   useEffect(() => {
     const fetchChartData = async () => {
       try {
-        const response = await fetch("api/active-users");
-        const data = await response.json();
+        const response = await instance.get("/active-users");
+        const data = response.data;
 
         setChartData({
           labels: ["01", "02", "03", "04", "05", "06", "07"], // Keep labels static

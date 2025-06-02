@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import AuthenticationChart from '../charts/AuthenticationChart';
+import instance from "../../helpers/instance.js";
 
 function AuthenticationSection() {
     const [authData, setAuthData] = useState({ success: 0, failure: 0 });
@@ -7,8 +8,8 @@ function AuthenticationSection() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('api/auth-rates'); 
-                const data = await response.json();
+                const response = await instance.get('/auth-rates');
+                const data = response.data;
                 setAuthData(data);
             } catch (error) {
                 console.error('Error fetching authentication data:', error);

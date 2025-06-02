@@ -73,7 +73,11 @@ function App() {
 
 
     // Send form data to the server
-    instance.post('api/register', formdata)
+    instance.post('/register', formdata,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
       .then((response) => {
         // Success alert and redirect
         alert('User registered successfully!');

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
+import instance from "../../helpers/instance.js";
 
 ChartJS.register(ArcElement, Tooltip);
 
@@ -10,9 +11,8 @@ function AuthenticationChart() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('api/auth-rates'); 
-                const data = await response.json();
-                setAuthData(data);
+                const response = await instance.get('/auth-rates');
+                setAuthData(response.data);
             } catch (error) {
                 console.error('Error fetching authentication data:', error);
             }

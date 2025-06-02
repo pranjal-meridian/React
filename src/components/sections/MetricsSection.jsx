@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import instance from "../../helpers/instance.js";
 
 function MetricsSection() {
   const [userStats, setUserStats] = useState({
@@ -27,9 +28,9 @@ function MetricsSection() {
     const fetchStats = async () => {
       try {
         const [userRes, activeRes, sessionRes] = await Promise.all([
-          axios.get('api/user-stats'),
-          axios.get('api/active-users'),
-          axios.get('api/average-session-duration'),
+          instance.get('/user-stats'),
+          instance.get('/active-users'),
+          instance.get('/average-session-duration'),
         ]);
 
         setUserStats(userRes.data);
